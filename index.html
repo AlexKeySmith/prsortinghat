@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Name Pairing PWA</title>
+    <script>
+      // Lists of names
+      var leftList = ["Alex", "Andrew", "Devin", "Francis", "Stephen"];
+      var rightList = ["Anna", "Danas", "Jakub", "Paulius", "Osvaldas"];
+
+
+      function pairNames() {
+       //based upon the current week, map the leftList and rightList to form a new list of tuples with the keys left, right.
+       var currentWeek = getCurrentWeek();
+        var leftIndex = currentWeek % leftList.length;
+        var rightIndex = currentWeek % rightList.length;
+        var leftListRotated = leftList.slice(leftIndex).concat(leftList.slice(0, leftIndex));
+        var rightListRotated = rightList.slice(rightIndex).concat(rightList.slice(0, rightIndex));
+        var pairedList = [];
+        for (var i = 0; i < leftListRotated.length; i++) {
+          pairedList.push({ left: { name: leftListRotated[i], needsReplacement : false, replacementName: "" }, 
+                            right: { name: rightListRotated[i], needsReplacement : false, replacementName: "" } });
+        }
+
+        //filter each original list to include only the names which are checked
+        var leftListFiltered = leftList.filter(function(name) {
+          return document.getElementById(name).checked;
+        });
+        var rightListFiltered = rightList.filter(function(name) {
+          return document.getElementById(name).checked;
+        });
+
+        //filter the pairedList, if the left or right name is not in the filtered list, mark the name as needing a replacement
+        //if a name needs a replacement, randomly select a name from the filtered list and assign it as the replacement name
+        pairedList = pairedList.filter(function(pair) {
+          if (leftListFiltered.indexOf(pair.left.name) === -1) {
+            pair.left.needsReplacement = true;
+            pair.left.replacementName = leftListFiltered[Math.floor(Math.random() * leftListFiltered.length)];
+          }
+          if (rightListFiltered.indexOf(pair.right.name) === -1) {
+            pair.right.needsReplacement = true;
+            pair.right.replacementName = rightListFiltered[Math.floor(Math.random() * rightListFiltered.length)];
+          }
+          return true;
+        });
+
+        //display each pair in the dom
+        var list = document.getElementById("pairs");
+        list.innerHTML = "";
+        for (var i = 0; i < pairedList.length; i++) {
+          var pair = pairedList[i];
+          var li = document.createElement("li");
+          li.innerHTML = pair.left.name + " and " + pair.right.name;
+          if (pair.left.needsReplacement) {
+            li.innerHTML += " (replace " + pair.left.name + " with " + pair.left.replacementName + ")";
+          }
+          if (pair.right.needsReplacement) {
+            li.innerHTML += " (replace " + pair.right.name + " with " + pair.right.replacementName + ")";
+          }
+          list.appendChild(li);
+        }
+
+        //display inside of #week the current week
+        var week = document.getElementById("week");
+        week.innerHTML = "Week " + currentWeek;
+    
+
+      }
+
+
+      //based upon the current date, get the week in the year of 52 weeks
+      function getCurrentWeek() {
+        var today = new Date();
+        var firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+        var pastDaysOfYear =
+          (today - firstDayOfYear + (firstDayOfYear.getTimezoneOffset() - today.getTimezoneOffset()) * 60 * 1000) /
+          86400000;
+        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+      }
+
+      //when the dom is loaded pair the names
+      document.addEventListener("DOMContentLoaded", function(event) {
+        pairNames();
+      });
+
+      //when all checkboxes inside of .selections are changed, pair the names
+      document.addEventListener("change", function(event) {
+        if (event.target.matches(".selections input")) {
+          pairNames();
+        }
+      });
+
+    </script>
+    <style>
+      body {
+        background-color: #1e1e1e;
+        color: #fff;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      li {
+        font-size: 1.5rem;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      ul.selections {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+      }
+
+      .selections li {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+      }
+
+
+    
+    </style>
+  </head>
+  <body>
+    <h1>🧙‍♂️ Sorting Hat</h1>
+    <h2 id="week"></h2>
+    <ul class="selections">
+       <!-- generate li and checkboxes from the leftList and rightList -->
+      <li>
+        <input type="checkbox" id="Alex" />
+        <label for="Alex">Alex</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Andrew" checked />
+        <label for="Andrew">Andrew</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Devin" checked />
+        <label for="Devin">Devin</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Francis" checked />
+        <label for="Francis">Francis</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Stephen" checked />
+        <label for="Stephen">Stephen</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Anna" checked />
+        <label for="Anna">Anna</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Danas" checked />
+        <label for="Danas">Danas</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Jakub" checked />
+        <label for="Jakub">Jakub</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Paulius" checked />
+        <label for="Paulius">Paulius</label>
+      </li>
+      <li>
+        <input type="checkbox" id="Osvaldas" checked />
+        <label for="Osvaldas">Osvaldas</label>
+      </li>
+      
+    </ul>
+
+    <ul id="pairs">
+
+
+    </ul>
+    <h2>Policy (open for suggestions - it's generated ;-) )</h2>
+    <p>
+        Include Betra, Lina and Padma as optional reviewers on all items, particularly for impact analysis and code coverage analysis i.e. how much is covered by automation and how much needs manual and / or exploratory testing.
+    </p>
+    <p>
+        Berta, Lina and Padma's PRs should include the source team as original mandatory reviewers and the other team as optional reviewers.
+    </p>
+    <p>
+        Include Daniel & Jarek for training purposes
+    </p>
+
+  </body>
+</html>
