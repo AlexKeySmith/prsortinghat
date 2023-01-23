@@ -4,21 +4,24 @@
     <title>Name Pairing PWA</title>
     <script>
       // Lists of names
-      var leftList = ["Alex", "Andrew", "Devin", "Francis", "Murali", "Stephen"];
-      var rightList = ["Alan", "Anna", "Danas", "Jakub", "Paulius", "Osvaldas"];
+      const leftList = ["Alex", "Andrew", "Devin", "Francis", "Murali", "Stephen"];
+      const rightList = ["Alan", "Anna", "Danas", "Jakub", "Paulius", "Osvaldas"];
 
 
-      function pairNames() {
-       //based upon the current week, map the leftList and rightList to form a new list of tuples with the keys left, right.
-       var currentWeek = getCurrentWeek();
+      function pairNames(leftList, rightList) {
+        let currentWeek = getCurrentWeek();
+        let rotatedNames = rotateNames(currentWeek, leftList, rightList);
+        updateUI(rotatedNames);
+      }
+
+      function rotateNames(currentWeek, leftList, rightList) {
+         //based upon the current week, map the leftList and rightList to form a new list of tuples with the keys left, right.
         var leftIndex = currentWeek % leftList.length;
-        var rightIndex = currentWeek % rightList.length;
         var leftListRotated = leftList.slice(leftIndex).concat(leftList.slice(0, leftIndex));
-        var rightListRotated = rightList.slice(rightIndex).concat(rightList.slice(0, rightIndex));
         var pairedList = [];
         for (var i = 0; i < leftListRotated.length; i++) {
           pairedList.push({ left: { name: leftListRotated[i], needsReplacement : false, replacementName: "" }, 
-                            right: { name: rightListRotated[i], needsReplacement : false, replacementName: "" } });
+                            right: { name: rightList[i], needsReplacement : false, replacementName: "" } });
         }
 
         //filter each original list to include only the names which are checked
@@ -43,6 +46,11 @@
           return true;
         });
 
+        return pairedList;
+      }
+
+      function updateUI(pairedList) {
+        
         //display each pair in the dom
         var list = document.getElementById("pairs");
         list.innerHTML = "";
@@ -62,8 +70,6 @@
         //display inside of #week the current week
         var week = document.getElementById("week");
         week.innerHTML = "Week " + currentWeek;
-    
-
       }
 
 
@@ -79,13 +85,13 @@
 
       //when the dom is loaded pair the names
       document.addEventListener("DOMContentLoaded", function(event) {
-        pairNames();
+        pairNames(leftList, rightList);
       });
 
       //when all checkboxes inside of .selections are changed, pair the names
       document.addEventListener("change", function(event) {
         if (event.target.matches(".selections input")) {
-          pairNames();
+          pairNames(leftList, rightList);
         }
       });
 
