@@ -5,7 +5,7 @@
     <script>
       // Lists of names
       const leftList = ["Alex", "Andrew", "Devin", "Francis", "Murali", "Stephen"];
-      const rightList = ["Justinas", "Anna", "Danas", "Jakub", "Paulius", "Osvaldas"];
+      const rightList = ["Justinas", "Anna", "Danas", "Jakub"];
 
 
       function pairNames(leftList, rightList) {
@@ -35,6 +35,8 @@
         //filter the pairedList, if the left or right name is not in the filtered list, mark the name as needing a replacement
         //if a name needs a replacement, randomly select a name from the filtered list and assign it as the replacement name
         pairedList = pairedList.filter(function(pair) {
+          if (!pair.right.name)
+            pair.right.name = rightListFiltered[Math.floor(Math.random() * rightListFiltered.length)];
           if (leftListFiltered.indexOf(pair.left.name) === -1) {
             pair.left.needsReplacement = true;
             pair.left.replacementName = leftListFiltered[Math.floor(Math.random() * leftListFiltered.length)];
@@ -168,7 +170,7 @@
         <label for="Devin">Devin</label>
       </li>
       <li>
-        <input type="checkbox" id="Francis" checked />
+        <input type="checkbox" id="Francis" />
         <label for="Francis">Francis</label>
       </li>
       <li>
@@ -195,14 +197,6 @@
         <input type="checkbox" id="Justinas" checked />
         <label for="Justinas">Justinas</label>
       </li>
-      <li>
-        <input type="checkbox" id="Paulius" checked />
-        <label for="Paulius">Paulius</label>
-      </li>
-      <li>
-        <input type="checkbox" id="Osvaldas" checked />
-        <label for="Osvaldas">Osvaldas</label>
-      </li>
       
     </ul>
 
@@ -212,10 +206,10 @@
     </ul>
     <h2>Policy (open for suggestions - it's generated ;-) )</h2>
     <p>
-        Include Berta, Lina and Padma as optional reviewers on all items, particularly for impact analysis and code coverage analysis i.e. how much is covered by automation and how much needs manual and / or exploratory testing.
+        Include Berta, Lina and Tamanna as optional reviewers on all items, particularly for impact analysis and code coverage analysis i.e. how much is covered by automation and how much needs manual and / or exploratory testing.
     </p>
     <p>
-        Berta, Lina and Padma's PRs should include the source team as original mandatory reviewers and the other team as optional reviewers. Berta and Lina can use Danas' pair to get one contact person from AO for PR reviews.
+        Berta, Lina and Tamanna's PRs should include the source team as original mandatory reviewers and the other team as optional reviewers. Berta and Lina can use Danas' pair to get one contact person from AO for PR reviews.
     </p>
     <p>
         Include Daniel & Jarek for training purposes.
